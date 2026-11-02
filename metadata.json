@@ -1,0 +1,6 @@
+{
+  "name": "Inside the Work — Michael David Mayo",
+  "description": "An interactive exhibition application for contemporary artist Michael David Mayo at Art Miami 2026.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

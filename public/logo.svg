@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5173F" />
+      <stop offset="50%" stop-color="#FF5A36" />
+      <stop offset="100%" stop-color="#F7B733" />
+    </linearGradient>
+    <radialGradient id="ring-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="60%" stop-color="#FF5A36" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#E5173F" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <!-- Outer glow ring -->
+  <circle cx="60" cy="60" r="56" fill="url(#ring-glow)" />
+  <!-- Main circle -->
+  <circle cx="60" cy="60" r="48" fill="#141417" stroke="url(#brand-grad)" stroke-width="2.5" />
+  <!-- Inner ring -->
+  <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(247, 183, 51, 0.25)" stroke-width="1" stroke-dasharray="3 3" />
+  <!-- Monogram Mark -->
+  <path d="M 44 42 L 44 78 L 52 78 C 66 78 72 70 72 60 C 72 50 66 42 52 42 Z M 52 50 C 60 50 63 54 63 60 C 63 66 60 70 52 70 L 52 50 Z" fill="url(#brand-grad)" />
+  <circle cx="76" cy="46" r="4" fill="#F7B733" />
+</svg>

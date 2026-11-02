@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --color-ivory: #F6F1E7;
+    --color-champagne: #E9DCC4;
+    --color-charcoal: #0E0D0C;
+    --color-charcoal-warm: #1B1916;
+    --color-gold: #B08D57;
+    --color-gold-muted: #8E7043;
+    --color-ink: #1A1714;
+    --color-taupe: #8A7F72;
+    --color-hairline-light: rgba(26, 23, 20, 0.12);
+    --color-hairline-dark: rgba(246, 241, 231, 0.12);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  /* Prevent unintentional zoom/drag gestures on kiosk controls */
+  button, a, input, select, textarea {
+    touch-action: manipulation;
+  }
+}
+
+/* Paper noise texture for Light/Editorial environment */
+.paper-texture {
+  background-color: #F6F1E7;
+  background-image: radial-gradient(rgba(26, 23, 20, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+/* Film grain overlay for Dark/Cinematic environment */
+.film-grain {
+  position: relative;
+}
+
+.film-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 10;
+}
+
+/* Custom minimal scrollbar for gallery wall */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(176, 141, 87, 0.25);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(176, 141, 87, 0.5);
+}
+
+/* Museum Lighting & Gilt Glow effects */
+.radial-gold-glow {
+  background: radial-gradient(circle at 50% 50%, rgba(176, 141, 87, 0.12) 0%, rgba(176, 141, 87, 0.02) 45%, transparent 70%);
+}
+
+.radial-spotlight {
+  background: radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
+}
+
+/* Hairline dividers */
+.hairline-b-light {
+  border-bottom: 1px solid rgba(26, 23, 20, 0.12);
+}
+.hairline-t-light {
+  border-top: 1px solid rgba(26, 23, 20, 0.12);
+}
+.hairline-b-dark {
+  border-bottom: 1px solid rgba(246, 241, 231, 0.12);
+}
+.hairline-t-dark {
+  border-top: 1px solid rgba(246, 241, 231, 0.12);
+}
+
+/* Conic gradient rotating border for Floating Glass Pill */
+@keyframes spin-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-conic-spin {
+  animation: spin-gradient 8s linear infinite;
+}
+
+/* 6-second light shine sweep animation for Book a Table button */
+@keyframes shine-sweep {
+  0% { transform: translateX(-180%) skewX(-25deg); }
+  20%, 100% { transform: translateX(280%) skewX(-25deg); }
+}
+
+.animate-shine-sweep {
+  animation: shine-sweep 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
