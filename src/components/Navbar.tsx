@@ -1,26 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, Heart, Utensils, Calendar } from 'lucide-react';
+import { Bookmark, Home, Search, Heart, Calendar } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useScrollState } from '../hooks/useScrollState';
 import { useCollection } from '../context/CollectionContext';
 import { NavLinks } from './NavLinks';
-import { CartButton } from './CartButton';
 import { CommandSearch } from './CommandSearch';
 import { MobileMenu } from './MobileMenu';
 import { MobileBottomBar } from './MobileBottomBar';
 import { SignInModal } from './SignInModal';
 import { BookingWidgetModal } from './BookingWidgetModal';
-import { MagneticButton } from './MagneticButton';
 
 export const Navbar: React.FC = () => {
-  const { isScrolled, progress, navTheme } = useScrollState();
+  const { isScrolled, isVisible, progress, navTheme } = useScrollState();
   const {
+    savedSlugs,
     favorites,
+    isDrawerOpen,
+    setIsDrawerOpen,
     isCommandSearchOpen,
     setIsCommandSearchOpen,
-    setIsSignInOpen,
-    setIsBookingOpen,
   } = useCollection();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -29,7 +28,6 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Detect OS for ⌘K vs Ctrl K
   useEffect(() => {
     if (typeof window !== 'undefined') {
       setIsMac(/(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent));
@@ -52,7 +50,7 @@ export const Navbar: React.FC = () => {
       {/* 0. Accessible "Skip to content" link */}
       <a
         href="#exhibition"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[150] focus:px-4 focus:py-2 focus:bg-[#E5173F] focus:text-white focus:rounded-full focus:shadow-lg focus:outline-none text-xs font-sans uppercase tracking-wider"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[150] focus:px-4 focus:py-2.5 focus:bg-[#B08D57] focus:text-[#0E0D0C] focus:rounded-[2px] focus:shadow-xl focus:outline-none text-xs font-sans uppercase tracking-widest font-semibold"
       >
         Skip to content
       </a>
@@ -63,15 +61,22 @@ export const Navbar: React.FC = () => {
           !isScrolled ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
-          background: 'linear-gradient(to bottom, rgba(11, 11, 13, 0.55) 0%, transparent 100%)',
+          background: 'linear-gradient(to bottom, rgba(14, 13, 12, 0.6) 0%, transparent 100%)',
         }}
       />
 
-      {/* Master Navbar Container */}
+      {/* Master Navbar Container — Hides on fast scroll-down, reappears on scroll-up */}
       <header
-        className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 pointer-events-none flex justify-center ${
+        className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ease-out pointer-events-none flex justify-center ${
+          isVisible ? 'translate-y-0' : '-translate-y-full'
+        } ${
           isScrolled ? 'pt-2 sm:pt-3 px-3 sm:px-6' : 'pt-0 px-0'
         }`}
+        style={{
+          paddingTop: isScrolled
+            ? 'max(10px, env(safe-area-inset-top))'
+            : 'env(safe-area-inset-top)',
+        }}
       >
         {/* Floating Glass Pill Morph Container */}
         <motion.div
@@ -80,51 +85,58 @@ export const Navbar: React.FC = () => {
           animate={{
             y: 0,
             opacity: 1,
-            width: isScrolled ? '100%' : '100%',
-            maxWidth: isScrolled ? '1180px' : '100%',
-            height: isScrolled ? (window.innerWidth < 640 ? 58 : 64) : (window.innerWidth < 640 ? 72 : 88),
-            borderRadius: isScrolled ? (window.innerWidth < 640 ? '20px' : '9999px') : '0px',
+            maxWidth: isScrolled ? '1280px' : '100%',
+            borderRadius: isScrolled ? '9999px' : '0px',
           }}
           transition={{
             type: 'spring',
             stiffness: 260,
             damping: 30,
           }}
-          className={`relative pointer-events-auto w-full transition-colors duration-500 overflow-hidden flex items-center justify-between px-4 sm:px-6 lg:px-8 ${
+          className={`relative pointer-events-auto w-full transition-all duration-500 overflow-hidden flex items-center justify-between px-4 sm:px-6 lg:px-10 ${
+            /* Height scaling:
+               - Phones (<768px): 64px (56px scrolled)
+               - Tablet portrait (768–1023px): 72px (64px scrolled)
+               - Tablet landscape & up (≥1024px): 88px (68px scrolled)
+            */
+            isScrolled
+              ? 'h-[56px] md:h-[64px] lg:h-[68px]'
+              : 'h-[64px] md:h-[72px] lg:h-[88px]'
+          } ${
             !isScrolled
               ? 'bg-transparent shadow-none'
               : isLight
-              ? 'bg-[#F6F1EA]/75 text-[#1A1714] shadow-[0_10px_35px_-10px_rgba(0,0,0,0.15),0_2px_10px_rgba(0,0,0,0.06)]'
-              : 'bg-[#141417]/55 text-[#F6F1E7] shadow-[0_10px_40px_-10px_rgba(229,23,63,0.25),0_2px_10px_rgba(0,0,0,0.4)]'
+              ? 'bg-[#F6F1EA]/80 text-[#1A1714] shadow-[0_12px_35px_-10px_rgba(26,23,20,0.18),0_2px_10px_rgba(26,23,20,0.08)]'
+              : 'bg-[#141417]/65 text-[#F6F1E7] shadow-[0_12px_40px_-10px_rgba(0,0,0,0.65),0_2px_10px_rgba(176,141,87,0.15)]'
           }`}
           style={{
-            backdropFilter: isScrolled ? 'blur(18px) saturate(160%)' : 'none',
-            WebkitBackdropFilter: isScrolled ? 'blur(18px) saturate(160%)' : 'none',
+            backdropFilter: isScrolled ? 'blur(20px) saturate(160%)' : 'none',
+            WebkitBackdropFilter: isScrolled ? 'blur(20px) saturate(160%)' : 'none',
           }}
         >
-          {/* Animated 1px Conic Gradient Border when Scrolled (8s loop) */}
+          {/* Animated 1px Conic Gradient Border when Scrolled */}
           {isScrolled && (
             <div className="absolute inset-0 pointer-events-none p-[1px] rounded-[inherit] overflow-hidden">
               <div
                 className="absolute inset-[-100%] animate-conic-spin opacity-40"
                 style={{
                   background:
-                    'conic-gradient(from 0deg at 50% 50%, #E5173F 0deg, #FF5A36 120deg, #F7B733 240deg, #E5173F 360deg)',
+                    'conic-gradient(from 0deg at 50% 50%, #B08D57 0deg, #E5173F 90deg, #FF5A36 180deg, #F7B733 270deg, #B08D57 360deg)',
                 }}
               />
               <div
                 className={`absolute inset-[1px] rounded-[inherit] ${
-                  isLight ? 'bg-[#F6F1EA]/80' : 'bg-[#141417]/80'
+                  isLight ? 'bg-[#F6F1EA]/85' : 'bg-[#141417]/85'
                 }`}
               />
             </div>
           )}
 
-          {/* 2px Scroll Progress Bar in Brand Gradient running along very bottom edge */}
+          {/* 2px Scroll Progress Bar running along very bottom edge */}
           {isScrolled && (
             <div className="absolute bottom-0 inset-x-0 h-[2px] bg-white/10 z-30 overflow-hidden rounded-b-[inherit]">
               <div
-                className="h-full bg-gradient-to-r from-[#E5173F] via-[#FF5A36] to-[#F7B733] transition-all duration-150 ease-out"
+                className="h-full bg-gradient-to-r from-[#B08D57] via-[#FF5A36] to-[#F7B733] transition-all duration-150 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -133,185 +145,153 @@ export const Navbar: React.FC = () => {
           {/* INNER CONTENT: 3-Zone Architecture */}
           <div className="relative z-10 w-full flex items-center justify-between gap-4">
             
-            {/* ZONE 1 (LEFT): Circular Dish Cult Logo Badge */}
+            {/* ZONE 1 (LEFT):
+                - Phones: Monogram "MDM"
+                - Tablet portrait & up: Monogram + artist name
+            */}
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={handleLogoClick}
-                aria-label="Dish Cult Home"
-                className="group relative flex items-center gap-3 p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A36] select-none"
+                aria-label="Michael David Mayo Home"
+                className="group relative flex items-center gap-3 p-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57] select-none min-h-[48px] min-w-[48px]"
               >
-                {/* Outer pulsing glow ring */}
-                <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#E5173F]/30 via-[#FF5A36]/30 to-[#F7B733]/30 blur-sm opacity-60 group-hover:opacity-100 transition-opacity animate-pulse pointer-events-none" />
-
-                {/* Circular Logo Badge */}
+                {/* Monogram Box Badge */}
                 <motion.div
-                  animate={{ scale: isScrolled ? 0.88 : 1 }}
+                  animate={{ scale: isScrolled ? 0.9 : 1 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                  className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-[#FF5A36]/50 bg-[#141417] shadow-md flex items-center justify-center group-hover:rotate-8 transition-transform duration-300"
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-[2px] border flex items-center justify-center font-serif text-sm sm:text-base font-semibold tracking-wider transition-all duration-300 ${
+                    !isScrolled
+                      ? 'border-[#B08D57]/60 text-[#F6F1E7] bg-black/30 group-hover:border-[#B08D57]'
+                      : isLight
+                      ? 'border-[#1A1714]/30 text-[#1A1714] bg-black/5 group-hover:border-[#B08D57]'
+                      : 'border-[#B08D57]/50 text-[#F6F1E7] bg-white/5 group-hover:border-[#B08D57]'
+                  }`}
                 >
-                  <img
-                    src="/logo.svg"
-                    alt="Dish Cult Logo"
-                    className="w-full h-full object-contain p-1"
-                  />
+                  <span className="font-serif italic text-[#B08D57]">MDM</span>
                 </motion.div>
 
-                {/* Brand Title (hidden on compact viewports) */}
-                <div className="hidden sm:flex flex-col text-left">
+                {/* Artist Name: Visible on Tablet Portrait and up (>=768px), hidden on phones */}
+                <div className="hidden md:flex flex-col text-left">
                   <span
                     className={`font-serif italic text-base sm:text-lg font-semibold tracking-tight transition-colors ${
                       !isScrolled
-                        ? 'text-[#F6F1E7] drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]'
+                        ? 'text-[#F6F1E7] drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)]'
                         : isLight
                         ? 'text-[#1A1714]'
                         : 'text-[#F6F1E7]'
                     }`}
                   >
-                    Inside the Work
+                    Michael David Mayo
                   </span>
                   <span
                     className={`text-[10px] font-mono uppercase tracking-[0.2em] transition-colors ${
                       !isScrolled
-                        ? 'text-white/70'
+                        ? 'text-[#B08D57]'
                         : isLight
                         ? 'text-[#8A7F72]'
-                        : 'text-white/60'
+                        : 'text-[#B08D57]'
                     }`}
                   >
-                    Michael David Mayo
+                    Art Miami 2026 · Booth P-214
                   </span>
                 </div>
               </button>
             </div>
 
-            {/* ZONE 2 (CENTRE): Desktop & Tablet Links with sliding glass pill highlight */}
+            {/* ZONE 2 (CENTRE):
+                - Phones & Tablet Portrait (<1024px): Hidden
+                - Tablet Landscape & Desktop (≥1024px): Full layout with 4 centered links & sliding gold underline
+            */}
             <div className="hidden lg:flex items-center justify-center flex-1">
               <NavLinks isLight={isLight} condensed={false} />
-            </div>
-
-            {/* Tablet Condensed Links (768px-1023px) */}
-            <div className="hidden md:flex lg:hidden items-center justify-center flex-1">
-              <NavLinks isLight={isLight} condensed={true} />
             </div>
 
             {/* ZONE 3 (RIGHT): Controls Strip */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               
-              {/* Command Search Button ("Search ⌘K" / Ctrl K) */}
+              {/* Command Search button (Desktop & Laptop) */}
               <button
                 onClick={() => setIsCommandSearchOpen(true)}
                 aria-label="Open Command Search"
-                className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all text-xs font-sans min-h-[44px] min-w-[44px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A36] ${
+                className={`hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all text-xs font-sans min-h-[44px] justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57] ${
                   !isScrolled
-                    ? 'border-white/20 bg-black/25 text-white/90 hover:border-white/40'
+                    ? 'border-white/20 bg-black/30 text-white/90 hover:border-[#B08D57]'
                     : isLight
-                    ? 'border-black/15 bg-black/5 text-[#1A1714] hover:border-black/30'
-                    : 'border-white/15 bg-white/5 text-white/90 hover:border-white/30'
+                    ? 'border-black/15 bg-black/5 text-[#1A1714] hover:border-[#B08D57]'
+                    : 'border-white/15 bg-white/5 text-white/90 hover:border-[#B08D57]'
                 }`}
               >
-                <Search className="w-3.5 h-3.5 opacity-80" />
-                <span className="hidden xl:inline text-[11px] font-medium tracking-wide">Search</span>
-                <kbd
-                  className={`hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-mono tracking-wider border ${
-                    !isScrolled
-                      ? 'bg-white/10 border-white/20 text-white/80'
-                      : isLight
-                      ? 'bg-black/8 border-black/15 text-[#1A1714]/80'
-                      : 'bg-white/10 border-white/20 text-white/80'
-                  }`}
-                >
+                <Search className="w-3.5 h-3.5 text-[#B08D57]" />
+                <span className="text-[11px] font-medium tracking-wider uppercase">Search</span>
+                <kbd className="px-1.5 py-0.5 rounded text-[10px] font-mono tracking-wider border border-white/20 bg-white/10">
                   {isMac ? '⌘K' : 'Ctrl K'}
                 </kbd>
               </button>
 
-              {/* Favourites Heart Icon with Count */}
+              {/* Home Icon button (Desktop only >=1024px) */}
               <button
-                onClick={() => {
-                  const el = document.getElementById('exhibition');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }}
-                aria-label={`Favorites (${favorites.length})`}
-                className={`relative hidden sm:flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A36] ${
+                onClick={handleLogoClick}
+                aria-label="Return to Welcome Screen"
+                title="Return to Welcome"
+                className={`hidden lg:flex items-center justify-center w-10 h-10 rounded-full border transition-colors min-h-[48px] min-w-[48px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57] ${
                   !isScrolled
-                    ? 'text-white/85 hover:bg-black/25'
+                    ? 'border-white/20 text-[#F6F1E7] hover:border-[#B08D57]'
                     : isLight
-                    ? 'text-[#1A1714] hover:bg-black/8'
-                    : 'text-white/85 hover:bg-white/10'
+                    ? 'border-[#1A1714]/20 text-[#1A1714] hover:border-[#B08D57]'
+                    : 'border-white/20 text-[#F6F1E7] hover:border-[#B08D57]'
                 }`}
               >
-                <Heart
-                  className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform group-hover:scale-110 ${
-                    favorites.length > 0 ? 'text-[#E5173F] fill-[#E5173F]/40' : ''
-                  }`}
-                />
-                {favorites.length > 0 && (
-                  <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#E5173F] text-white text-[9px] font-mono font-bold flex items-center justify-center shadow-sm">
-                    {favorites.length}
-                  </span>
-                )}
+                <Home className="w-4 h-4" />
               </button>
 
-              {/* Cart Button with animated badge, shake & mini preview */}
-              <CartButton isLight={isLight} />
-
-              {/* "Sign in" Text Link with Draw-In Underline */}
+              {/* Collector's Selection Button with animated count badge:
+                  - Phones: Icon only with badge (min 48×48px)
+                  - Tablets & Desktop: Label + count badge (min 48×48px)
+              */}
               <button
-                onClick={() => setIsSignInOpen(true)}
-                className={`relative hidden lg:inline-block py-1 text-xs sm:text-sm font-medium tracking-wide group transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A36] ${
-                  !isScrolled
-                    ? 'text-white/90 hover:text-white'
+                onClick={() => setIsDrawerOpen(true)}
+                aria-label={`Open Collector's Selection (${savedSlugs.length} works)`}
+                className={`relative flex items-center gap-2.5 px-3 sm:px-4 py-2 rounded-full border transition-all duration-300 min-h-[48px] min-w-[48px] justify-center text-xs font-sans tracking-widest uppercase focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57] ${
+                  savedSlugs.length > 0
+                    ? 'border-[#B08D57] bg-[#B08D57]/20 text-[#B08D57] font-semibold'
+                    : !isScrolled
+                    ? 'border-white/25 text-[#F6F1E7] hover:border-[#B08D57]'
                     : isLight
-                    ? 'text-[#1A1714]/80 hover:text-[#1A1714]'
-                    : 'text-white/80 hover:text-white'
+                    ? 'border-[#1A1714]/20 text-[#1A1714] hover:border-[#B08D57]'
+                    : 'border-white/25 text-[#F6F1E7] hover:border-[#B08D57]'
                 }`}
               >
-                <span>Sign in</span>
-                <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-gradient-to-r from-[#E5173F] to-[#FF5A36] transition-all duration-300 ease-out group-hover:w-full" />
+                <Bookmark className={`w-4 h-4 ${savedSlugs.length > 0 ? 'text-[#B08D57] fill-[#B08D57]/30' : ''}`} />
+                <span className="hidden md:inline">Selection</span>
+                
+                {/* Count Badge */}
+                <span className="min-w-[20px] h-[20px] px-1 rounded-full bg-[#B08D57] text-[#0E0D0C] font-mono text-[10px] font-bold flex items-center justify-center tabular-nums">
+                  {savedSlugs.length}
+                </span>
               </button>
 
-              {/* "Book a table" Pill Button with 6s Shine Sweep & Magnetic Cursor Hover */}
-              <MagneticButton
-                onClick={() => setIsBookingOpen(true)}
-                className="hidden sm:flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-full bg-gradient-to-r from-[#E5173F] via-[#FF5A36] to-[#F7B733] text-white text-xs font-sans uppercase tracking-widest font-semibold shadow-[0_4px_16px_rgba(229,23,63,0.35)] hover:shadow-[0_8px_24px_rgba(229,23,63,0.5)] transition-all shrink-0"
-              >
-                <Calendar className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">Book a table</span>
-                <span className="md:hidden">Book</span>
-
-                {/* 6-second light shine sweep */}
-                <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/40 to-transparent pointer-events-none animate-shine-sweep" />
-              </MagneticButton>
-
-              {/* Mobile Hamburger: 2 lines that morph smoothly into an X */}
+              {/* Hamburger Button (Phones & Tablet Portrait < 1024px) */}
               <button
                 ref={hamburgerRef}
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label="Toggle Navigation Menu"
+                aria-label="Toggle Exhibition Menu"
                 aria-expanded={mobileMenuOpen}
-                className={`md:hidden relative w-11 h-11 min-h-[44px] min-w-[44px] rounded-full flex flex-col items-center justify-center gap-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A36] ${
+                className={`lg:hidden relative w-11 h-11 min-h-[48px] min-w-[48px] rounded-full flex flex-col items-center justify-center gap-1.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57] ${
                   !isScrolled
-                    ? 'bg-black/25 text-white'
+                    ? 'bg-black/35 text-[#F6F1E7] border border-white/20'
                     : isLight
-                    ? 'bg-black/8 text-[#1A1714]'
-                    : 'bg-white/10 text-white'
+                    ? 'bg-black/8 text-[#1A1714] border border-[#1A1714]/15'
+                    : 'bg-white/10 text-[#F6F1E7] border border-white/20'
                 }`}
               >
                 <motion.span
-                  animate={
-                    mobileMenuOpen
-                      ? { rotate: 45, y: 5 }
-                      : { rotate: 0, y: 0 }
-                  }
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  animate={mobileMenuOpen ? { rotate: 45, y: 5 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
                   className="w-5 h-[2px] bg-current rounded-full origin-center"
                 />
                 <motion.span
-                  animate={
-                    mobileMenuOpen
-                      ? { rotate: -45, y: -3 }
-                      : { rotate: 0, y: 0 }
-                  }
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                  animate={mobileMenuOpen ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
                   className="w-5 h-[2px] bg-current rounded-full origin-center"
                 />
               </button>
@@ -320,13 +300,13 @@ export const Navbar: React.FC = () => {
         </motion.div>
       </header>
 
-      {/* Command Search Overlay (⌘K / Ctrl K) */}
+      {/* Command Search Overlay */}
       <CommandSearch
         isOpen={isCommandSearchOpen}
         onClose={() => setIsCommandSearchOpen(false)}
       />
 
-      {/* Mobile Fullscreen Menu with circular clip-path reveal */}
+      {/* Mobile & Tablet Fullscreen Menu Overlay */}
       <MobileMenu
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}

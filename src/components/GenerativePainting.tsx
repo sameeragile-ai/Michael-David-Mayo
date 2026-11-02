@@ -149,7 +149,8 @@ export const GenerativePainting: React.FC<GenerativePaintingProps> = ({
   const svgContent = (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      className="w-full h-full block object-cover select-none"
+      preserveAspectRatio="xMidYMid meet"
+      className="w-full h-auto block select-none max-h-[80dvh]"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Generative contemporary oil painting by Michael David Mayo"
@@ -341,7 +342,7 @@ export const GenerativePainting: React.FC<GenerativePaintingProps> = ({
     >
       {/* Outer moulding frame */}
       <div
-        className={`relative p-2.5 sm:p-3 md:p-4 rounded-[2px] transition-all duration-500 ${
+        className={`relative p-[clamp(6px,1.2vw,16px)] rounded-[2px] transition-all duration-500 ${
           frameStyle === 'antique-gilt'
             ? 'bg-gradient-to-tr from-[#634E2B] via-[#B08D57] to-[#7A5F35] shadow-[0_20px_45px_-10px_rgba(0,0,0,0.5),0_0_0_1px_rgba(176,141,87,0.3)]'
             : frameStyle === 'minimal-ivory'
@@ -350,7 +351,7 @@ export const GenerativePainting: React.FC<GenerativePaintingProps> = ({
         }`}
       >
         {/* Archival Mat (Museum board border with subtle bevel) */}
-        <div className="relative p-2.5 sm:p-3 md:p-4 bg-[#F5EFE6] border border-[#DDD5C5] shadow-[inset_0_2px_4px_rgba(0,0,0,0.15)] rounded-[1px]">
+        <div className="relative p-[clamp(6px,1.8vw,20px)] bg-[#F5EFE6] border border-[#DDD5C5] shadow-[inset_0_2px_4px_rgba(0,0,0,0.15)] rounded-[1px]">
           {/* Inner bevel frame edge */}
           <div className="relative overflow-hidden shadow-[inset_0_0_12px_rgba(0,0,0,0.22)] bg-[#100F0E]">
             {svgContent}

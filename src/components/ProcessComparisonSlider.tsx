@@ -110,32 +110,32 @@ export const ProcessComparisonSlider: React.FC<ProcessComparisonSliderProps> = (
             />
           </div>
 
-          {/* Interactive Vertical Drag Divider Handle */}
+          {/* Interactive Vertical Drag Divider Handle (min 48px touch target) */}
           <div
             className="absolute top-0 bottom-0 w-[2px] bg-[#B08D57] pointer-events-none z-30 shadow-[0_0_12px_rgba(176,141,87,0.8)]"
             style={{ left: `${sliderPos}%` }}
           >
-            {/* Center Handle Badge */}
-            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-[#1B1916] border-2 border-[#B08D57] shadow-xl flex items-center justify-center text-[#B08D57]">
-              <span className="text-[10px] font-mono font-bold tracking-tighter">↔</span>
+            {/* Center Handle Badge (Min 48×48px for comfortable touch dragging) */}
+            <div className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#1B1916] border-2 border-[#B08D57] shadow-2xl flex items-center justify-center text-[#B08D57]">
+              <span className="text-xs font-mono font-bold tracking-tighter">↔</span>
             </div>
           </div>
 
           {/* Corner Stage Badges */}
-          <div className="absolute top-3 left-3 z-20 px-2.5 py-1 bg-black/70 backdrop-blur-sm rounded-[1px] border border-white/10 text-[10px] font-mono text-[#F6F1E7]/80 uppercase tracking-widest">
+          <div className="absolute top-3 left-3 z-20 px-2 py-1 bg-black/75 backdrop-blur-sm rounded-[1px] border border-white/10 text-[9px] sm:text-[10px] font-mono text-[#F6F1E7]/80 uppercase tracking-widest">
             Stage {currentStageNum} of 3
           </div>
 
-          <div className="absolute bottom-3 right-3 z-20 px-2.5 py-1 bg-black/70 backdrop-blur-sm rounded-[1px] border border-white/10 text-[10px] font-mono text-[#B08D57] uppercase tracking-widest">
-            Drag to Peel Layers
+          <div className="absolute bottom-3 right-3 z-20 px-2 py-1 bg-black/75 backdrop-blur-sm rounded-[1px] border border-white/10 text-[9px] sm:text-[10px] font-mono text-[#B08D57] uppercase tracking-widest">
+            Drag to Peel
           </div>
         </div>
 
-        {/* Quick Stage Buttons */}
-        <div className="flex items-center gap-2 mt-5">
+        {/* Quick Stage Buttons (Accessible min 44px tap target) */}
+        <div className="flex items-center gap-2 mt-4 sm:mt-5 w-full justify-center">
           <button
             onClick={() => setSliderPos(15)}
-            className={`px-3 py-1.5 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors ${
+            className={`flex-1 sm:flex-initial px-3 py-2 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors min-h-[44px] flex items-center justify-center ${
               currentStageNum === 1
                 ? 'bg-[#B08D57] border-[#B08D57] text-[#0E0D0C] font-semibold'
                 : 'bg-white/5 border-white/15 text-[#8A7F72] hover:text-[#F6F1E7]'
@@ -145,7 +145,7 @@ export const ProcessComparisonSlider: React.FC<ProcessComparisonSliderProps> = (
           </button>
           <button
             onClick={() => setSliderPos(50)}
-            className={`px-3 py-1.5 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors ${
+            className={`flex-1 sm:flex-initial px-3 py-2 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors min-h-[44px] flex items-center justify-center ${
               currentStageNum === 2
                 ? 'bg-[#B08D57] border-[#B08D57] text-[#0E0D0C] font-semibold'
                 : 'bg-white/5 border-white/15 text-[#8A7F72] hover:text-[#F6F1E7]'
@@ -155,7 +155,7 @@ export const ProcessComparisonSlider: React.FC<ProcessComparisonSliderProps> = (
           </button>
           <button
             onClick={() => setSliderPos(85)}
-            className={`px-3 py-1.5 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors ${
+            className={`flex-1 sm:flex-initial px-3 py-2 text-xs font-sans tracking-wider uppercase rounded-sm border transition-colors min-h-[44px] flex items-center justify-center ${
               currentStageNum === 3
                 ? 'bg-[#B08D57] border-[#B08D57] text-[#0E0D0C] font-semibold'
                 : 'bg-white/5 border-white/15 text-[#8A7F72] hover:text-[#F6F1E7]'

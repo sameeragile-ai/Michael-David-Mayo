@@ -11,14 +11,13 @@ interface MobileMenuProps {
 }
 
 const mobileLinks = [
-  { index: '01', label: 'Explore', href: '#exhibition' },
-  { index: '02', label: 'Cities & Fairs', href: '#exhibition' },
-  { index: '03', label: 'Experiences', href: '#process' },
-  { index: '04', label: 'The Artist', href: '#artist' },
-  { index: '05', label: 'Philosophy', href: '#philosophy' },
+  { index: '01', label: 'Exhibition', href: '#exhibition' },
+  { index: '02', label: 'Creative Process', href: '#process' },
+  { index: '03', label: 'About The Artist', href: '#artist' },
+  { index: '04', label: 'Philosophy & Films', href: '#philosophy' },
 ];
 
-const cityChips = ['Miami', 'New York', 'Zurich', 'London', 'Paris', 'Venice', 'Tokyo', 'Berlin'];
+const cityChips = ['Miami (Booth P-214)', 'New York (Hudson Valley)', 'Zurich (Galerie Von Berg)', 'Venice Biennale', 'London (White Cube)'];
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburgerRef }) => {
   const { setIsBookingOpen, setIsSignInOpen } = useCollection();
@@ -65,34 +64,34 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
         <motion.div
           ref={menuRef}
           initial={{
-            clipPath: 'circle(0px at calc(100% - 38px) 38px)',
+            clipPath: 'circle(0px at calc(100% - 40px) 40px)',
             opacity: 0,
           }}
           animate={{
-            clipPath: 'circle(150% at calc(100% - 38px) 38px)',
+            clipPath: 'circle(150% at calc(100% - 40px) 40px)',
             opacity: 1,
           }}
           exit={{
-            clipPath: 'circle(0px at calc(100% - 38px) 38px)',
+            clipPath: 'circle(0px at calc(100% - 40px) 40px)',
             opacity: 0,
           }}
           transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[105] bg-[#0E0D0C] text-[#F6F1E7] flex flex-col justify-between p-6 pt-safe-top pb-safe-bottom overflow-y-auto film-grain select-none"
+          className="fixed inset-0 z-[105] h-[100dvh] max-h-[100dvh] bg-[#0E0D0C] text-[#F6F1E7] flex flex-col justify-between p-6 sm:p-10 pt-safe-top pb-safe-bottom overflow-y-auto film-grain select-none"
         >
-          {/* Slow-moving ember radial glow */}
-          <div className="absolute top-1/4 right-1/4 w-80 h-80 rounded-full bg-[#E5173F]/15 blur-3xl pointer-events-none" />
-          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full bg-[#FF5A36]/15 blur-3xl pointer-events-none" />
+          {/* Ambient ember glow */}
+          <div className="absolute top-1/4 right-1/4 w-80 h-80 rounded-full bg-[#B08D57]/15 blur-3xl pointer-events-none" />
+          <div className="absolute bottom-1/4 left-1/4 w-72 h-72 rounded-full bg-[#E5173F]/12 blur-3xl pointer-events-none" />
 
-          {/* Top Bar with Brand Badge & Close X */}
-          <div className="relative z-10 flex items-center justify-between pb-4 border-b border-white/10">
+          {/* Top Bar with Brand Badge & 48px Close Button */}
+          <div className="relative z-10 flex items-center justify-between pb-4 border-b border-white/10 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-[#FF5A36]/40 p-0.5 bg-[#141417]">
-                <img src="/logo.svg" alt="Dish Cult" className="w-full h-full object-contain" />
+              <div className="w-10 h-10 rounded-[2px] border border-[#B08D57]/50 p-1 flex items-center justify-center bg-[#141417]">
+                <span className="font-serif italic text-base text-[#B08D57]">MDM</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-serif italic text-base text-white">Inside the Work</span>
-                <span className="font-mono text-[10px] uppercase tracking-widest text-[#FF5A36]">
-                  Art Miami 2026
+                <span className="font-serif italic text-base sm:text-lg text-white">Inside the Work</span>
+                <span className="font-mono text-[10px] uppercase tracking-widest text-[#B08D57]">
+                  Michael David Mayo · Art Miami
                 </span>
               </div>
             </div>
@@ -100,14 +99,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
             <button
               onClick={onClose}
               aria-label="Close menu"
-              className="w-11 h-11 min-h-[44px] min-w-[44px] rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white"
+              className="w-12 h-12 min-h-[48px] min-w-[48px] rounded-full bg-white/5 hover:bg-white/10 border border-white/15 flex items-center justify-center text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B08D57]"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Large Staggered Editorial Serif Links (~40px) */}
-          <nav className="relative z-10 my-auto py-6 space-y-4">
+          {/* Large Staggered Editorial Serif Links:
+              - In portrait: single column stack
+              - In landscape phones: 2 columns so links never overflow vertically!
+          */}
+          <nav className="relative z-10 my-auto py-6 grid grid-cols-1 landscape:max-sm:grid-cols-2 gap-3 sm:gap-4">
             {mobileLinks.map((link, idx) => (
               <motion.div
                 key={link.index}
@@ -115,7 +117,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
                   duration: 0.5,
-                  delay: 0.12 + idx * 0.06,
+                  delay: 0.1 + idx * 0.06,
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
@@ -125,33 +127,36 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
                     e.preventDefault();
                     handleLinkClick(link.href);
                   }}
-                  className="group flex items-baseline gap-4 py-2 border-b border-white/5 active:bg-gradient-to-r active:from-[#E5173F]/20 active:to-transparent transition-all rounded-lg px-2"
+                  className="group flex items-baseline gap-4 py-2 border-b border-white/10 active:bg-[#B08D57]/15 transition-all rounded-lg px-2"
                 >
-                  <span className="font-mono text-xs text-[#FF5A36] tracking-widest font-semibold">
+                  <span className="font-mono text-xs text-[#B08D57] tracking-widest font-semibold shrink-0">
                     {link.index}
                   </span>
-                  <span className="font-serif italic text-3xl sm:text-4xl text-white group-hover:text-[#FF5A36] transition-colors">
+                  <span
+                    className="font-serif italic text-white group-hover:text-[#B08D57] transition-colors leading-tight"
+                    style={{ fontSize: 'clamp(1.75rem, 6vw, 3.75rem)' }}
+                  >
                     {link.label}
                   </span>
-                  <ArrowRight className="w-4 h-4 ml-auto text-white/30 group-hover:text-[#FF5A36] group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className="w-4 h-4 ml-auto text-white/30 group-hover:text-[#B08D57] group-hover:translate-x-1 transition-all shrink-0" />
                 </a>
               </motion.div>
             ))}
           </nav>
 
           {/* Bottom Controls Area */}
-          <div className="relative z-10 space-y-5 pt-4 border-t border-white/10">
+          <div className="relative z-10 space-y-4 pt-4 border-t border-white/10 shrink-0">
             {/* Horizontal Swipeable Row of City Chips */}
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 block mb-2">
-                Destinations & Pavilions
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#8A7F72] block mb-2">
+                Exhibition Pavilions & Provenance
               </span>
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+              <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                 {cityChips.map(c => (
                   <button
                     key={c}
                     onClick={() => handleLinkClick('#exhibition')}
-                    className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-sans whitespace-nowrap text-white/80 hover:text-white hover:border-[#FF5A36]/60 transition-colors"
+                    className="px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-sans whitespace-nowrap text-white/80 hover:text-white hover:border-[#B08D57] transition-colors min-h-[44px]"
                   >
                     {c}
                   </button>
@@ -159,17 +164,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
               </div>
             </div>
 
-            {/* Sign in & Full-Width Book button */}
-            <div className="space-y-2.5">
+            {/* Private Viewing & Sign in Buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <button
                 onClick={() => {
                   onClose();
                   setIsBookingOpen(true);
                 }}
-                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#E5173F] via-[#FF5A36] to-[#F7B733] text-white text-xs font-sans uppercase tracking-widest font-semibold shadow-[0_10px_25px_rgba(229,23,63,0.4)] flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-full bg-gradient-to-r from-[#B08D57] to-[#C49E65] text-[#0E0D0C] text-xs font-sans uppercase tracking-widest font-semibold shadow-md flex items-center justify-center gap-2 min-h-[48px]"
               >
                 <Calendar className="w-4 h-4" />
-                <span>Book a Table & Viewing</span>
+                <span>Request Private Viewing</span>
               </button>
 
               <button
@@ -177,28 +182,28 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, hamburg
                   onClose();
                   setIsSignInOpen(true);
                 }}
-                className="w-full py-3 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-sans uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-full bg-white/5 border border-white/15 text-white/85 text-xs font-sans uppercase tracking-widest hover:bg-white/10 transition-colors flex items-center justify-center gap-2 min-h-[48px]"
               >
-                <User className="w-4 h-4 text-[#FF5A36]" />
-                <span>Sign in to Patron Registry</span>
+                <User className="w-4 h-4 text-[#B08D57]" />
+                <span>Collector Portal Sign In</span>
               </button>
             </div>
 
-            {/* App Store / Google Play badges and Social Icons */}
-            <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs text-white/40">
+            {/* Footer Notice */}
+            <div className="flex items-center justify-between pt-2 border-t border-white/10 text-xs text-[#8A7F72]">
               <div className="flex items-center gap-2 text-[11px] font-mono">
-                <Smartphone className="w-3.5 h-3.5 text-[#F7B733]" />
-                <span>iOS App & PWA Active</span>
+                <Smartphone className="w-3.5 h-3.5 text-[#B08D57]" />
+                <span>Pedestal Touchscreen Kiosk · Miami</span>
               </div>
 
               <div className="flex items-center gap-4 text-white/60">
-                <a href="#welcome" aria-label="Instagram" className="hover:text-[#FF5A36] transition-colors">
+                <a href="#welcome" aria-label="Instagram" className="hover:text-[#B08D57] transition-colors p-1">
                   <Instagram className="w-4 h-4" />
                 </a>
-                <a href="#welcome" aria-label="Twitter" className="hover:text-[#FF5A36] transition-colors">
+                <a href="#welcome" aria-label="Twitter" className="hover:text-[#B08D57] transition-colors p-1">
                   <Twitter className="w-4 h-4" />
                 </a>
-                <a href="#welcome" aria-label="Website" className="hover:text-[#FF5A36] transition-colors">
+                <a href="#welcome" aria-label="Website" className="hover:text-[#B08D57] transition-colors p-1">
                   <Globe className="w-4 h-4" />
                 </a>
               </div>

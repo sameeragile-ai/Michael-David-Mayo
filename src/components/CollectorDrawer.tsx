@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Trash2, CheckCircle2, ArrowRight, ShieldCheck, Calendar, Phone, Mail, User } from 'lucide-react';
 import { useCollection } from '../context/CollectionContext';
@@ -24,6 +24,17 @@ export const CollectorDrawer: React.FC = () => {
     preferredSlot: 'VIP Preview (Dec 1)',
     message: '',
   });
+
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth < 640 : false
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 639px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -55,20 +66,25 @@ export const CollectorDrawer: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsDrawerOpen(false)}
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
           />
 
-          {/* Drawer Panel */}
-          <div className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10">
+          {/* Drawer Panel: Bottom sheet on mobile, right drawer on sm+ */}
+          <div className="fixed inset-x-0 bottom-0 sm:inset-x-auto sm:inset-y-0 sm:right-0 max-w-full flex justify-end">
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              className="w-screen max-w-md sm:max-w-lg bg-[#F6F1E7] text-[#1A1714] shadow-2xl flex flex-col paper-texture border-l border-[#1A1714]/15"
+              initial={isMobile ? { y: '100%' } : { x: '100%' }}
+              animate={isMobile ? { y: 0 } : { x: 0 }}
+              exit={isMobile ? { y: '100%' } : { x: '100%' }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full sm:w-[440px] md:w-[480px] h-[88dvh] sm:h-full max-h-[88dvh] sm:max-h-full rounded-t-2xl sm:rounded-none bg-[#F6F1E7] text-[#1A1714] shadow-2xl flex flex-col paper-texture border-t sm:border-t-0 sm:border-l border-[#1A1714]/15 overflow-hidden pb-safe-bottom"
             >
+              {/* Mobile Drag Indicator */}
+              <div className="sm:hidden pt-3 pb-1 flex justify-center">
+                <div className="w-12 h-1 bg-[#1A1714]/20 rounded-full" />
+              </div>
+
               {/* Header */}
-              <div className="p-6 border-b border-[#1A1714]/12 flex items-center justify-between">
+              <div className="p-5 sm:p-6 border-b border-[#1A1714]/12 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase tracking-[0.25em] text-[#8A7F72] block">
                     Curatorial Dossier
@@ -217,7 +233,7 @@ export const CollectorDrawer: React.FC = () => {
                                 value={formData.name}
                                 onChange={handleInputChange}
                                 placeholder="e.g. Eleanor Vance"
-                                className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2 text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
+                                className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2.5 sm:py-2 text-base sm:text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
                               />
                             </div>
                           </div>
@@ -228,7 +244,7 @@ export const CollectorDrawer: React.FC = () => {
                                 Email Address
                               </label>
                               <div className="relative">
-                                <Mail className="w-4 h-4 text-[#8A7F72] absolute left-3 top-3 pointer-events-none" />
+                                <Mail className="w-4 h-4 text-[#8A7F72] absolute left-3 top-3.5 sm:top-2.5 pointer-events-none" />
                                 <input
                                   type="email"
                                   required
@@ -236,7 +252,7 @@ export const CollectorDrawer: React.FC = () => {
                                   value={formData.email}
                                   onChange={handleInputChange}
                                   placeholder="collector@domain.com"
-                                  className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2 text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
+                                  className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2.5 sm:py-2 text-base sm:text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
                                 />
                               </div>
                             </div>
@@ -246,14 +262,14 @@ export const CollectorDrawer: React.FC = () => {
                                 Phone Number
                               </label>
                               <div className="relative">
-                                <Phone className="w-4 h-4 text-[#8A7F72] absolute left-3 top-3 pointer-events-none" />
+                                <Phone className="w-4 h-4 text-[#8A7F72] absolute left-3 top-3.5 sm:top-2.5 pointer-events-none" />
                                 <input
                                   type="tel"
                                   name="phone"
                                   value={formData.phone}
                                   onChange={handleInputChange}
                                   placeholder="+1 (555) 000-0000"
-                                  className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2 text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
+                                  className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] pl-9 pr-3 py-2.5 sm:py-2 text-base sm:text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
                                 />
                               </div>
                             </div>
@@ -267,7 +283,7 @@ export const CollectorDrawer: React.FC = () => {
                               name="preferredSlot"
                               value={formData.preferredSlot}
                               onChange={handleInputChange}
-                              className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] px-3 py-2 text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
+                              className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] px-3 py-2.5 sm:py-2 text-base sm:text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors"
                             >
                               <option>VIP Preview (Tuesday, Dec 1 · 4:00 PM – 8:00 PM)</option>
                               <option>Fair Hours (Dec 2–6 · 11:00 AM – 7:00 PM)</option>
@@ -286,7 +302,7 @@ export const CollectorDrawer: React.FC = () => {
                               value={formData.message}
                               onChange={handleInputChange}
                               placeholder="Specify architectural placement, shipping destination, or custom curatorial questions..."
-                              className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] px-3 py-2 text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors resize-none"
+                              className="w-full bg-white/70 border border-[#1A1714]/15 rounded-[1px] px-3 py-2.5 sm:py-2 text-base sm:text-xs text-[#1A1714] focus:outline-none focus:border-[#B08D57] transition-colors resize-none"
                             />
                           </div>
 

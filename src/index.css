@@ -18,6 +18,13 @@
     --color-hairline-dark: rgba(246, 241, 231, 0.12);
   }
 
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -28,12 +35,58 @@
 
   h1, h2, h3, h4, .font-serif {
     font-family: var(--font-serif);
+    text-wrap: balance;
   }
 
   /* Prevent unintentional zoom/drag gestures on kiosk controls */
   button, a, input, select, textarea {
     touch-action: manipulation;
   }
+
+  /* Prevent iOS Safari auto-zoom on inputs by ensuring >= 16px */
+  @media screen and (max-width: 767px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* Fluid Typography Utilities using clamp() */
+.text-hero-fluid {
+  font-size: clamp(2.75rem, 9vw, 9rem);
+  line-height: 0.95;
+}
+
+.text-title-fluid {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  line-height: 1.05;
+}
+
+.text-body-fluid {
+  font-size: clamp(0.95rem, 1.1vw, 1.125rem);
+  line-height: 1.65;
+}
+
+.text-label-fluid {
+  font-size: clamp(0.7rem, 0.9vw, 0.8rem);
+  letter-spacing: 0.2em;
+}
+
+/* Safe area padding utilities */
+.pt-safe-top {
+  padding-top: max(1rem, env(safe-area-inset-top));
+}
+
+.pb-safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.pl-safe-left {
+  padding-left: max(1rem, env(safe-area-inset-left));
+}
+
+.pr-safe-right {
+  padding-right: max(1rem, env(safe-area-inset-right));
 }
 
 /* Paper noise texture for Light/Editorial environment */
@@ -60,25 +113,22 @@
   z-index: 10;
 }
 
-/* Custom minimal scrollbar for gallery wall */
+/* Custom minimal scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(176, 141, 87, 0.25);
+  background: rgba(176, 141, 87, 0.3);
   border-radius: 2px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(176, 141, 87, 0.5);
-}
 
-/* Museum Lighting & Gilt Glow effects */
+/* Radial lighting effects */
 .radial-gold-glow {
-  background: radial-gradient(circle at 50% 50%, rgba(176, 141, 87, 0.12) 0%, rgba(176, 141, 87, 0.02) 45%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(176, 141, 87, 0.14) 0%, rgba(176, 141, 87, 0.03) 45%, transparent 70%);
 }
 
 .radial-spotlight {
@@ -99,7 +149,7 @@
   border-top: 1px solid rgba(246, 241, 231, 0.12);
 }
 
-/* Conic gradient rotating border for Floating Glass Pill */
+/* Conic gradient rotating border */
 @keyframes spin-gradient {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -109,7 +159,7 @@
   animation: spin-gradient 8s linear infinite;
 }
 
-/* 6-second light shine sweep animation for Book a Table button */
+/* 6-second light shine sweep animation */
 @keyframes shine-sweep {
   0% { transform: translateX(-180%) skewX(-25deg); }
   20%, 100% { transform: translateX(280%) skewX(-25deg); }

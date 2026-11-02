@@ -7,7 +7,7 @@ export const Footer: React.FC = () => {
   const { setIsStaffOpen } = useCollection();
 
   return (
-    <footer className="w-full bg-[#F6F1E7] text-[#1A1714] py-16 px-6 sm:px-12 paper-texture border-t border-[#1A1714]/12">
+    <footer className="w-full bg-[#F6F1E7] text-[#1A1714] pt-16 pb-28 sm:pb-16 px-6 sm:px-12 paper-texture border-t border-[#1A1714]/12 pb-safe-bottom">
       <div className="max-w-[1600px] mx-auto flex flex-col items-center text-center">
         
         {/* Monogram / Fair Lockup */}

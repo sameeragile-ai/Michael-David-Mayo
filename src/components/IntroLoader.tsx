@@ -62,22 +62,32 @@ export const IntroLoader: React.FC<IntroLoaderProps> = ({ onComplete }) => {
               className="w-48 sm:w-64 h-[1px] bg-[#B08D57] origin-center mb-8 opacity-80"
             />
 
-            {/* Artist name revealing letter by letter in Cormorant italic */}
-            <h1 className="font-serif italic text-3xl sm:text-5xl md:text-6xl text-[#1A1714] tracking-tight flex flex-wrap justify-center overflow-hidden py-1">
-              {artistName.split("").map((char, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ y: 40, opacity: 0 }}
-                  animate={stage !== 'line' ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.03 * index,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="inline-block"
-                >
-                  {char === " " ? "\u00A0" : char}
-                </motion.span>
+            {/* Artist name revealing in Cormorant italic with clamp and clean word break */}
+            <h1
+              className="font-serif italic text-[#1A1714] tracking-tight flex flex-wrap justify-center gap-x-2.5 overflow-hidden py-1"
+              style={{ fontSize: 'clamp(1.75rem, 6.5vw, 3.75rem)' }}
+            >
+              {['Michael', 'David', 'Mayo'].map((word, wordIdx) => (
+                <span key={wordIdx} className="inline-flex whitespace-nowrap">
+                  {word.split('').map((char, charIdx) => {
+                    const globalIdx = wordIdx * 6 + charIdx;
+                    return (
+                      <motion.span
+                        key={charIdx}
+                        initial={{ y: 35, opacity: 0 }}
+                        animate={stage !== 'line' ? { y: 0, opacity: 1 } : { y: 35, opacity: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: 0.03 * globalIdx,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className="inline-block"
+                      >
+                        {char}
+                      </motion.span>
+                    );
+                  })}
+                </span>
               ))}
             </h1>
 

@@ -68,12 +68,12 @@ function AppContent() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-[100] bg-[#1B1916] border border-[#B08D57]/60 text-[#F6F1E7] px-4 py-3 rounded-[2px] shadow-2xl flex items-center gap-3 text-xs font-sans tracking-wide"
+            className="fixed bottom-24 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-[100] bg-[#1B1916] border border-[#B08D57]/60 text-[#F6F1E7] px-4 py-3 rounded-[2px] shadow-2xl flex items-center gap-3 text-xs font-sans tracking-wide pb-safe-bottom"
           >
             <div className="w-5 h-5 rounded-full bg-[#B08D57] text-[#0E0D0C] flex items-center justify-center shrink-0">
               <Check className="w-3 h-3" />
             </div>
-            <span>{toast}</span>
+            <span className="truncate">{toast}</span>
           </motion.div>
         )}
       </AnimatePresence>

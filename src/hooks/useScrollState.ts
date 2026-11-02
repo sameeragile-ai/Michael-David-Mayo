@@ -5,6 +5,7 @@ export type NavTheme = 'light' | 'dark';
 export interface ScrollState {
   scrollY: number;
   isScrolled: boolean;
+  isVisible: boolean;
   progress: number;
   navTheme: NavTheme;
 }
@@ -12,11 +13,12 @@ export interface ScrollState {
 export function useScrollState(): ScrollState {
   const [scrollY, setScrollY] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
   const [progress, setProgress] = useState(0);
   const [navTheme, setNavTheme] = useState<NavTheme>('dark');
 
-  // Throttled scroll listener using requestAnimationFrame
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     let ticking = false;
 
     const updateScroll = () => {
@@ -27,6 +29,15 @@ export function useScrollState(): ScrollState {
       setScrollY(currentScrollY);
       setIsScrolled(currentScrollY >= 24);
       setProgress(currentProgress);
+
+      // Hide on scroll-down (past 160px), reappear on scroll-up
+      if (currentScrollY > lastScrollY + 12 && currentScrollY > 160) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY - 6 || currentScrollY <= 60) {
+        setIsVisible(true);
+      }
+
+      lastScrollY = Math.max(0, currentScrollY);
       ticking = false;
     };
 
@@ -57,7 +68,7 @@ export function useScrollState(): ScrollState {
         });
       },
       {
-        rootMargin: '-80px 0px -75% 0px', // detects when section hits the top navbar region
+        rootMargin: '-80px 0px -75% 0px',
         threshold: [0, 0.1, 0.5],
       }
     );
@@ -68,5 +79,5 @@ export function useScrollState(): ScrollState {
     return () => observer.disconnect();
   }, []);
 
-  return { scrollY, isScrolled, progress, navTheme };
+  return { scrollY, isScrolled, isVisible, progress, navTheme };
 }
